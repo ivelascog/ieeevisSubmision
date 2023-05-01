@@ -1,87 +1,248 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TimeSearcher+</title>
-
-  <link
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
-          rel="stylesheet"
-          integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
-          crossorigin="anonymous"
-  />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-          href="https://fonts.googleapis.com/css2?family=Oswald:wght@600&family=Roboto:wght@300&display=swap"
-          rel="stylesheet"
-  />
-
-  <style>
-    h1,
-    h2,
-    h3,
-    h4 {
-      font-family: "Oswald", sans-serif;
-      font-weight: bolder;
-    }
-    div {
-      font-family: "Roboto", sans-serif;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://unpkg.com/prismjs@v1.x/themes/prism.css" rel="stylesheet"/>
 </head>
 <body>
+<h1 align="center">TimeSearcher+</h1>
+<h4 align="center">A tool that summarizes and explores temporal data sets with quantitative values</h4>
 <div class="container">
-  <div class="row">
-    <h1>TimeSearcher+ <br /><small>KMC Weights</small></h1>
+    <p>You can use it to visualize thousands of time series, and select multiple groups by direct manipulation. In
+        addition, it
+        works as a reactive widget that can be added to other applications, returning the selected groups in real
+        time.</p>
+    <table>
+        <thead>
+        <tr>
+            <th>Group Selection</th>
+            <th>Detailed View</th>
+            <th>Reference Lines</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><img src="imgs/timeSearcher_groupSelection.gif"/></td>
+            <td><img src="imgs/timeSearcher_detailedView.gif"/></td>
+            <td><img src="imgs/timesearcher_referencesLines.png/" width="300"></td>
+        </tr>
+        </tbody>
+    </table>
 
-    <a href="data.html"><strong>Or test your own data</strong></a>
-    <div class="col-4">
-      <div id="observablehq-viewof-hasDetailed-347bccdd"></div>
-      <div id="observablehq-viewof-showGrid-347bccdd"></div>
-      <div id="observablehq-viewof-doubleYlegend-347bccdd"></div>
-      <div id="observablehq-brushCoordinatesElement-347bccdd"></div>
-      <div id="observablehq-divDetails-347bccdd"></div>
-    </div>
-    <!-- /.col-4 -->
-    <div class="col-8" id="divChart">
-      <div id="observablehq-intro-347bccdd"></div>
-      <div id="observablehq-viewof-maxTimelines-347bccdd"></div>
-      <div id="observablehq-viewof-selected-347bccdd"></div>
-    </div>
-    <!-- /.col-8 -->
-  </div>
-  <!-- /.row -->
+
+    <h2 id="try-it-">Try it!</h2>
+    <p>You can test timeSearcher+ right now with your <strong>own CSV data</strong> (less than 200MB), in <a
+            href="data.html"><strong>TimeSearhcer+: Test your own data</strong></a></p>
+    <p>Or you can test it with the KMC weights data, in <a href="KMC.html"><strong>TimeSearcher+: KMC
+        weights</strong></a></p>
+
+    <h2 id="install">Install</h2>
+    <pre><code class="language-sh"> npm install time-searcher-plus </code></pre>
+    <p>Requires <a href="https://github.com/FezVrasta/popper.js/">^popper.js@2.11.6</a>, <a href="http://d3js.org">^d3@7.8.2</a>
+        and <a href="https://github.com/observablehq/htl">^htl@0.3.1</a>.</p>
+
+    <script type="text/plain" class="language-markup">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <!-- target for the main Widget -->
+  <div id="target"></div>
+  <!-- target fot the detailed Widget -->
+  <div id="targetDetailed"></div>
+
+  <!-- Load the libraries -->
+  <script src="https://d3js.org/d3.v7.js">&lt;/script>
+  <script src="https://unpkg.com/@popperjs/core@2">&lt;/script>
+  <script src="https://unpkg.com/htl@0.3.1/dist/htl.min.js">&lt;/script>
+  <script src="https://unpkg.com/time_searcher/dist/TimeSearcher.min.js">&lt;/script>
+
+  <script >
+    // TimeSearcher+ Step 1. Create a TimeSearcher+ passing a series of arguments.
+    let target = TimeSearcher({
+        target: d3.select("#target").node(), // Target to render the overview Widget
+        detailedElement: d3.select("#targetDetailed").node(), // Target to render the detailed Widget (Optional)
+        x: "Date", // Atribute to show in the X axis (Note that it also supports functions)
+        y:  "Open", // Atribute to show in the Y axis (Note that it also supports functions)
+        id: "stock", // / Atribute to group the input data (Note that it also supports functions)
+        updateCallback: (data) => {console.log(data)}, // Set a callback that will be called when the user's selection is changed. (Optional)
+
+    })
+
+
+    // load your data, Remember to provide a function that transforms your data attributes to the correct type.
+    d3.csv("./sp500_20-22.csv",type).then(data => {
+        target.ts.data(data);
+    });
+
+
+    </script>
+
+    <h3 id="step-by-step">Step by step</h3>
+    <ol>
+        <li><strong>HTML</strong>. Start with this template</li>
+        <script type="text/plain" class="language-markup">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <!-- Your overview widget goes here -->
+  <div id="target"></div>
+  <!-- tYour detailed widget goes here -->
+  <div id="targetDetailed"></div>
+</body>
+</html>
+
+
+        </script>
+        <li><strong>Import TimeSearcher+</strong>. Create and import a new JavaScript file below the scripts (d3, Popper
+            and TimeSearcher+)
+            or right in the html like in the example below
+        </li>
+        <script type="text/plain" class="language-markup">
+<script src="https://d3js.org/d3.v7.js">&lt;/script>
+<script src="https://unpkg.com/@popperjs/core@2">&lt;/script>
+<script src="https://unpkg.com/htl@0.3.1/dist/htl.min.js">&lt;/script>
+<script src="https://unpkg.com/time_searcher/dist/TimeSearcher.min.js">&lt;/script>
+<script type="text/javascript">
+    //   YOUR_JS_CODE_HERE
+&lt;/script>
+
+
+        </script>
+        <li><strong>Create a TimeSearcher+ Instance</strong>.</li>
+        <script type="text/plain" class="language-js">
+let target = TimeSearcher({
+      target: d3.select("#target").node(), // Target to render the overview Widget
+      detailedElement: d3.select("#targetDetailed").node(), // Target to render the detailed Widget (Optional)
+      x: "Date", // Atribute to show in the X axis (Note that it also supports functions)
+      y:  "Open", // Atribute to show in the Y axis (Note that it also supports functions)
+      id: "stock", // / Atribute to group the input data (Note that it also supports functions)
+      // More configuration parameters
+      overviewWidth: 1200, // Set the desired width of the overview Widget
+      detailedWidth: 1200 - 20, // Set the desired width of the detailed Widget
+      overviewHeight: 600, // Set the desired height of the overview Widget
+      detailedHeight: 300, // Set the desired height of the individual detailed graph Widget
+      detailedContainerHeight: 400, // Set the desired height of the detailed Widget
+      updateCallback: (data) => {console.log(data)}, // Set a callback that will be called when the user's selection is changed.
+      statusCallback: (status) => {}, // Set a callback that will be called when changing the internal state of the widget ( assignment of colors, brushes, etc...)
+      fmtX: d3.timeFormat("%d/%m/%y"), // Function, how to format x points in the tooltip
+      fmtY: d3.format(".2d"), // Function, how to format x points in the tooltip
+      yLabel: "",
+      xLabel: "",
+      filters: [], // Array of filters to use, format [[x1, y1], [x2, y2], ...]
+      brushShadow: "drop-shadow( 2px 2px 2px rgba(0, 0, 0, .7))", // How to show a shadow on the selected brush
+      maxDetailedRecords: 100, // How many results to show in the detail view
+      showGroupMedian: true, // If active show a line with the median of the enabled groups
+      binWidth: 1, // Sets the width of the bins used to calculate the group average. Note that this value may vary slightly to achieve a integer number of bins.
+   })
+
+
+        </script>
+        <li>[Optional] <strong>Configure TimeSearcher render</strong>.</li>
+        <script type="text/plain" class="language-js">
+// Default Parameters
+   target.ts.xPartitions = 10; // Partitions performed on the X-axis for the collision acceleration algorithm.
+   target.ts.yPartitions = 10; // Partitions performed on the Y-axis for the collision acceleration algorithm.
+   target.ts.defaultAlpha = 0.8; // Default transparency (when no selection is active) of drawn lines
+   target.ts.selectedAlpha = 1; // Transparency of selected lines
+   target.ts.noSelectedAlpha = 0.4; // Transparency of unselected lines
+   target.ts.backgroundColor = "#ffffff";
+   target.ts.defaultColor = "#aaa"; // Default color (when no selection is active) of the drawn lines. It only has effect when "groupAttr" is not defined.
+   target.ts.selectedColor = "#aaa"; // Color of selected lines. It only has effect when "groupAttr" is not defined.
+   target.ts.noSelectedColor = "#ddd"; // Color of unselected lines. It only has effect when "groupAttr" is not defined.
+   target.ts.hasDetailed = true; // Determines whether detail data will be displayed or not. Disabling it saves preprocessing time if detail data is not to be displayed.
+   target.ts.margin = { left: 50, top: 30, bottom: 50, right: 20 };
+   target.ts.colorScale = d3.scaleOrdinal(d3.schemeCategory10); // The color scale to be used to display the different groups defined by the "groupAttr" attribute.
+   target.ts.brushesColorScale = d3.scaleOrdinal(d3.schemeCategory10); // The color scale to be used to display the brushes
+   target.ts.groupAttr = null; // Specifies the attribute to be used to discriminate the groups.
+   target.ts.doubleYlegend = false; // Allows the y-axis legend to be displayed on both sides of the chart.
+   target.ts.showGrid = false; // If active, a reference grid is displayed.
+   target.ts.showBrushTooltip = true; // Allows to display a tooltip on the brushes containing its coordinates.
+   target.ts.autoUpdate = true; // Allows to decide whether changes in brushes are processed while moving, or only at the end of the movement.
+   target.ts.brushGruopSize = 15; //Controls the size of the colored rectangles used to select the different brushGroups.
+   target.ts.stepX = { days: 10 }; // Defines the step used, both in the spinboxes and with the arrows on the X axis. (See https://date-fns.org/v2.16.1/docs/Duration )
+   target.ts.stepY = 1; // // Defines the step used, both in the spinboxes and with the arrows on the Y axis.
+
+
+        </script>
+        <li><strong>Set the data</strong>.
+            <script type="text/plain" class="language-js">
+target.ts.data(myData);
+
+
+            </script>
+            <span>The file containing the reference lines will be a json file with the following definition:</span>
+
+            <script type="text/plain" class="language-js">
+[
+  {
+    "name": "Line1",
+    "color": "yellow", // Color in css format
+    "opacity": 1, // opacity level of the line
+    "data": [[p1x,p1y],[p2x,p2y],...]
+  },
+  {
+    "name": "Line2",
+    "color": "red", // Color in css format
+    "opacity": 0.5, // opacity level of the line
+    "data": [[p1x,p1y],[p2x,p2y],...]
+  }
+]
+
+
+            </script>
+    </ol>
+
+    <h2>Source Code</h2>
+    <p>The widget code is available <a href="code/timesearcherplus.zip">here</a></p>
+    <p>To compile the code you should follow the instructions:</p>
+    <p>Go to the package download location</p>
+    <script type="text/plain" class="language-sh">
+cd /{{Route]]/timesearcherplus
+
+    </script>
+    <p>Install the project</p>
+    <script type="text/plain" class="language-sh">
+npm install
+    </script>
+    <p>At this point you should have the project compiled in the folder dist, with the files</p>
+    <ul>
+        <li>timeSearcher.esm.js</li>
+        <li>TimeSearcher.js</li>
+        <li>TimeSearcher.min.js</li>
+    </ul>
+
+
+    <h2 id="license">License</h2>
+    <p>TimeSearcher+.js is licensed under the MIT license. (<a href="http://opensource.org/licenses/MIT)e">http://opensource.org/licenses/MIT)e</a>
+    </p>
+
+    <h2>Why this page?</h2>
+    <p>This page has been created to maintain anonymity in the process of submitting a short-paper to ieeevis.
+        This documentation is also available in the code repository on github (which we do not link to maintain
+        anonymity) and on the NPM page.</p>
+
 </div>
 
-<link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/@observablehq/inspector@5/dist/inspector.css"
-/>
-<script type="module">
-  import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@5/dist/runtime.js";
-  import define from "https://api.observablehq.com/d/b8b51fe1db7d3769.js?v=3";
-  const notebook = new Runtime().module(define, name => {
-    if (name === "intro") return new Inspector(document.querySelector("#observablehq-intro-347bccdd"));
-    if (name === "viewof selected") return new Inspector(document.querySelector("#observablehq-viewof-selected-347bccdd"));
-    if (name === "viewof hasDetailed") return new Inspector(document.querySelector("#observablehq-viewof-hasDetailed-347bccdd"));
-    if (name === "viewof showGrid") return new Inspector(document.querySelector("#observablehq-viewof-showGrid-347bccdd"));
-    if (name === "viewof doubleYlegend") return new Inspector(document.querySelector("#observablehq-viewof-doubleYlegend-347bccdd"));
-    if (name === "viewof maxTimelines") return new Inspector(document.querySelector("#observablehq-viewof-maxTimelines-347bccdd"));
-    if (name === "brushCoordinatesElement") return new Inspector(document.querySelector("#observablehq-brushCoordinatesElement-347bccdd"));
-    if (name === "divDetails") return new Inspector(document.querySelector("#observablehq-divDetails-347bccdd"));
-    return ["update","brushDetails","divTimeSearcher","brushesControlsElement","dataF"].includes(name);
-  });
 
-  console.log("Changing width to", document.querySelector("#divChart").offsetWidth);
-  notebook.redefine("width", document.querySelector("#divChart").offsetWidth)
-</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+<script src="https://unpkg.com/prismjs@v1.x/components/prism-core.min.js"></script>
+<script src="https://unpkg.com/prismjs@v1.x/plugins/autoloader/prism-autoloader.min.js"></script>
+<script src="https://unpkg.com/prismjs@v1.x/plugins/unescaped-markup/prism-unescaped-markup.js"></script>
 
-<script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
-        crossorigin="anonymous"
-></script>
 </body>
 </html>
