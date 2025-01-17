@@ -1,192 +1,312 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
-    <title>TimeSearcher+</title>
+    <title>TimeWidget</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link href="https://unpkg.com/prismjs@v1.x/themes/prism.css" rel="stylesheet"/>
 </head>
 <body>
-<h1 align="center">TimeSearcher+</h1>
+<h1 align="center">TimeWidget</h1>
 <h4 align="center">A tool that summarizes and explores temporal data sets with quantitative values</h4>
 <div class="container">
-    <p>You can use it to visualize thousands of time series, and select multiple groups by direct manipulation. In
-        addition, it
-        works as a reactive widget that can be added to other applications, returning the selected groups in real
-        time.</p>
-    <table>
-        <thead>
-        <tr>
-            <th>Group Selection</th>
-            <th>Detailed View</th>
-            <th>Reference Lines</th>
-        </tr>
-        </thead>
+    <table style="margin: auto; height: 25vh; width: 50vw;">
         <tbody>
         <tr>
-            <td><img src="imgs/timeSearcher_groupSelection.gif"/></td>
-            <td><img src="imgs/timeSearcher_detailedView.gif"/></td>
-            <td><img src="imgs/timesearcher_referencesLines.png" width="300px"></td>
+            <th style="text-align:center">Group Selection</th>
+            <th style="text-align:center">Detailed View</th>
+        </tr>
+        <tr>
+            <td style="text-align:center; width: 50%"><img
+                    src="https://raw.githubusercontent.com/ivelascog/TimeWidget/main/imgs/TimeWidget_groupSelection.gif"
+                    style="width: 100%"/></td>
+            <td style="text-align:center; width: 50%"><img
+                    src="https://raw.githubusercontent.com/ivelascog/TimeWidget/main/imgs/TimeWidget_detailedView.gif "
+                    style="width: 100%"/></td>
+        </tr>
+        <tr>
+            <td style="text-align:center"><strong>Moving Patterns</strong></td>
+            <td style="text-align:center"><strong>Reference Lines</strong></td>
+        </tr>
+        <tr>
+            <td style="text-align:center; width: 50%"><img
+                    src="https://raw.githubusercontent.com/ivelascog/TimeWidget/main/imgs/TimeWidget_multipleSelection.gif"
+                    style="width: 100%"/></td>
+            <td style="text-align:center; width: 50%"><img
+                    src="https://raw.githubusercontent.com/ivelascog/TimeWidget/main/imgs/TimeWidget_referencesLines.png"
+                    style="width: 100%">
+            </td>
         </tr>
         </tbody>
     </table>
-
-
     <h2 id="try-it-">Try it!</h2>
-    <p>You can test timeSearcher+ right now with your <strong>own CSV data</strong> (less than 200MB), in <a
-            href="data.html"><strong>TimeSearhcer+: Test your own data</strong></a></p>
-    <p>Or you can test it with the KMC weights data, in <a href="KMC.html"><strong>TimeSearcher+: KMC
+    <p>You can test TimeWidget right now with your <strong>own CSV data</strong> (less than 200MB), in <a
+            href="data.html"><strong>TimeWidget: Test your own data</strong></a></p>
+    <p>Or you can test it with the KMC weights data, in <a href="KMC.html"><strong>TimeWidget: KMC
         weights</strong></a></p>
-
     <h2 id="install">Install</h2>
-    <pre><code class="language-sh"> npm install anonymized </code></pre>
+    <pre><code>npm install time-widget</code></pre>
     <p>Requires <a href="https://github.com/FezVrasta/popper.js/">^popper.js@2.11.6</a>, <a href="http://d3js.org">^d3@7.8.2</a>
         and <a href="https://github.com/observablehq/htl">^htl@0.3.1</a>.</p>
+    <pre><code class="lang-html">
+        &lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8" /&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;
+    &lt;title&gt;Document&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;!-- target for the main Widget --&gt;
+&lt;h1&gt;Stock Prices&lt;/h1&gt;
+&lt;div id="target"&gt;&lt;/div&gt;
 
-    <script type="text/plain" class="language-markup">
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-<body>
-  <!-- target for the main Widget -->
-  <div id="target"></div>
-  <!-- target fot the detailed Widget -->
-  <div id="targetDetailed"></div>
+&lt;!-- Load the libraries --&gt;
+&lt;!-- &lt;script src="../dist/TimeWidget.js"&gt;&lt;/script&gt; --&gt;
+&lt;script src="https://d3js.org/d3.v7.js"&gt;&lt;/script&gt;
+&lt;script src="https://unpkg.com/time-widget/dist/TimeWidget.min.js"&gt;&lt;/script&gt;
 
-  <!-- Load the libraries -->
-  <script src="https://d3js.org/d3.v7.js">&lt;/script>
-  <script src="https://unpkg.com/@popperjs/core@2">&lt;/script>
-  <script src="https://unpkg.com/htl@0.3.1/dist/htl.min.js">&lt;/script>
-  <script src="https://unpkg.com/time_searcher/dist/TimeSearcher.min.js">&lt;/script>
+&lt;script&gt;
+    let data = [
+        { Date: new Date("01/01/2023"), Open: 250, id: "Apple", group: "Technology" },
+        { Date: new Date("01/02/2023"), Open: 240, id: "Apple", group: "Technology" },
+        { Date: new Date("01/03/2023"), Open: 260, id: "Apple", group: "Technology" },
+    ];
 
-  <script >
-    // TimeSearcher+ Step 1. Create a TimeSearcher+ passing a series of arguments.
-    let target = TimeSearcher({
-        target: d3.select("#target").node(), // Target to render the overview Widget
-        detailedElement: d3.select("#targetDetailed").node(), // Target to render the detailed Widget (Optional)
-        x: "Date", // Atribute to show in the X axis (Note that it also supports functions)
-        y:  "Open", // Atribute to show in the Y axis (Note that it also supports functions)
-        id: "stock", // / Atribute to group the input data (Note that it also supports functions)
-        updateCallback: (data) => {console.log(data)}, // Set a callback that will be called when the user's selection is changed. (Optional)
+    let ts = TimeWidget(
+        data,
+        {
+            x: "Date", // Attribute to show in the X axis (Note that it also supports functions)
+            y: "Open", // Attribute to show in the Y axis (Note that it also supports functions)
+            id: "stock", // Attribute to group the input data (Note that it also supports functions)
+        }
+    );
 
-    })
-
-
-    // load your data, Remember to provide a function that transforms your data attributes to the correct type.
-    d3.csv("./sp500_20-22.csv",type).then(data => {
-        target.ts.data(data);
+    ts.addEventListener("input", () =&gt; {
+        console.log("Selected", ts.value);
     });
 
-
-    </script>
-
+    document.getElementById("target").appendChild(ts);
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
     <h3 id="step-by-step">Step by step</h3>
     <ol>
-        <li><strong>HTML</strong>. Start with this template</li>
-        <script type="text/plain" class="language-markup">
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-<body>
-  <!-- Your overview widget goes here -->
-  <div id="target"></div>
-  <!-- tYour detailed widget goes here -->
-  <div id="targetDetailed"></div>
-</body>
-</html>
-
-
-        </script>
-        <li><strong>Import TimeSearcher+</strong>. Create and import a new JavaScript file below the scripts (d3, Popper
-            and TimeSearcher+)
-            or right in the html like in the example below
+        <li><strong>HTML</strong>. Start with this template
+            <pre><code class="lang-html">
+&lt;!DOCTYPE html>
+&lt;html lang="en">
+&lt;head>
+  &lt;meta charset="UTF-8">
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0">
+  &lt;title>Document&lt;/title>
+&lt;/head>
+&lt;body>
+  &lt;!-- Your overview widget goes here -->
+  &lt;div id="target">&lt;/div>
+  &lt;!-- tYour detailed widget goes here -->
+  &lt;div id="targetDetailed">&lt;/div>
+&lt;/body>
+&lt;/html>
+</code></pre>
         </li>
-        <script type="text/plain" class="language-markup">
-<script src="https://d3js.org/d3.v7.js">&lt;/script>
-<script src="https://unpkg.com/@popperjs/core@2">&lt;/script>
-<script src="https://unpkg.com/htl@0.3.1/dist/htl.min.js">&lt;/script>
-<script src="https://unpkg.com/time_searcher/dist/TimeSearcher.min.js">&lt;/script>
-<script type="text/javascript">
-    //   YOUR_JS_CODE_HERE
-&lt;/script>
+        <li><strong>Import TimeWidget</strong>. Create and import a new JavaScript file below the scripts (d3, and
+            TimeWidget)
+            or right in the html like in the example below.
+            <pre><code class="lang-html">
+&lt;script src="https://d3js.org/d3.v7.js">&lt;/script>
+&lt;script src="https://unpkg.com/time-widget/dist/TimeWidget.min.js">&lt;/script>
+&lt;script type="text/javascript">
+  //   YOUR_JS_CODE_HERE
+&lt;/script>                
+</code></pre>
+        </li>
+        <li><p><strong>Create a TimeWidget Instance</strong></p>
+            <pre><code class="lang-js">
+let data = [
+    { Date: "01/01/2023", Open: 250, id: "Apple", group: "Technology" },
+    { Date: "01/02/2023", Open: 240, id: "Apple", group: "Technology" },
+    { Date: "01/03/2023", Open: 260, id: "Apple", group: "Technology" },
+  ];
 
-
-        </script>
-        <li><strong>Create a TimeSearcher+ Instance</strong>.</li>
-        <script type="text/plain" class="language-js">
-let target = TimeSearcher({
-      target: d3.select("#target").node(), // Target to render the overview Widget
-      detailedElement: d3.select("#targetDetailed").node(), // Target to render the detailed Widget (Optional)
+   let target = TimeWidget(data, {
       x: "Date", // Atribute to show in the X axis (Note that it also supports functions)
       y:  "Open", // Atribute to show in the Y axis (Note that it also supports functions)
-      id: "stock", // / Atribute to group the input data (Note that it also supports functions)
-      // More configuration parameters
-      overviewWidth: 1200, // Set the desired width of the overview Widget
-      detailedWidth: 1200 - 20, // Set the desired width of the detailed Widget
-      overviewHeight: 600, // Set the desired height of the overview Widget
-      detailedHeight: 300, // Set the desired height of the individual detailed graph Widget
-      detailedContainerHeight: 400, // Set the desired height of the detailed Widget
-      updateCallback: (data) => {console.log(data)}, // Set a callback that will be called when the user's selection is changed.
-      statusCallback: (status) => {}, // Set a callback that will be called when changing the internal state of the widget ( assignment of colors, brushes, etc...)
-      fmtX: d3.timeFormat("%d/%m/%y"), // Function, how to format x points in the tooltip
-      fmtY: d3.format(".2d"), // Function, how to format x points in the tooltip
-      yLabel: "",
-      xLabel: "",
-      filters: [], // Array of filters to use, format [[x1, y1], [x2, y2], ...]
-      brushShadow: "drop-shadow( 2px 2px 2px rgba(0, 0, 0, .7))", // How to show a shadow on the selected brush
-      maxDetailedRecords: 100, // How many results to show in the detail view
-      showGroupMedian: true, // If active show a line with the median of the enabled groups
-      binWidth: 1, // Sets the width of the bins used to calculate the group average. Note that this value may vary slightly to achieve a integer number of bins.
-   })
+      id: "stock", // Atribute to group the input data (Note that it also supports functions)
+      color: "Group", // (Optional) Attribute to color by
+   });
 
+  target.addEventListener("input", () => {console.log("Selected", target.value.selectedIds)})
+</code></pre>
+        </li>
+        <li>[Optional] <strong>Configure TimeWidget render</strong>
+            <
+            <p>You have two options: add them at initialization:</p>
+            <pre><code class="lang-js">
+let target = TimeWidget(data, {
+x: "Date", // Atribute to show in the X axis (Note that it also supports functions)
+y:  "Open", // Atribute to show in the Y axis (Note that it also supports functions)
+id: "stock", // Atribute to group the input data (Note that it also supports functions)
+color: "Group", // (Optional) Attribute to color by
 
-        </script>
-        <li>[Optional] <strong>Configure TimeSearcher render</strong>.</li>
-        <script type="text/plain" class="language-js">
+xPartitions: , // Partitions performed on the X-axis for the collision acceleration algorithm.
+yPartitions: 10, // Partitions performed on the Y-axis for the collision acceleration algorithm.
+defaultAlpha: 0.8, // Default transparency (when no selection is active) of drawn lines
+selectedAlpha: 1, // Transparency of selected lines
+noSelectedAlpha: 0.4, // Transparency of unselected lines
+backgroundColor: "#ffffff"
+            });
+</code></pre>
+            <p>Or as a subsequent step after initialization</p>
+            <pre><code class="lang-js">
 // Default Parameters
-   target.ts.xPartitions = 10; // Partitions performed on the X-axis for the collision acceleration algorithm.
-   target.ts.yPartitions = 10; // Partitions performed on the Y-axis for the collision acceleration algorithm.
-   target.ts.defaultAlpha = 0.8; // Default transparency (when no selection is active) of drawn lines
-   target.ts.selectedAlpha = 1; // Transparency of selected lines
-   target.ts.noSelectedAlpha = 0.4; // Transparency of unselected lines
-   target.ts.backgroundColor = "#ffffff";
-   target.ts.defaultColor = "#aaa"; // Default color (when no selection is active) of the drawn lines. It only has effect when "groupAttr" is not defined.
-   target.ts.selectedColor = "#aaa"; // Color of selected lines. It only has effect when "groupAttr" is not defined.
-   target.ts.noSelectedColor = "#ddd"; // Color of unselected lines. It only has effect when "groupAttr" is not defined.
-   target.ts.hasDetailed = true; // Determines whether detail data will be displayed or not. Disabling it saves preprocessing time if detail data is not to be displayed.
-   target.ts.margin = { left: 50, top: 30, bottom: 50, right: 20 };
-   target.ts.colorScale = d3.scaleOrdinal(d3.schemeCategory10); // The color scale to be used to display the different groups defined by the "groupAttr" attribute.
-   target.ts.brushesColorScale = d3.scaleOrdinal(d3.schemeCategory10); // The color scale to be used to display the brushes
-   target.ts.groupAttr = null; // Specifies the attribute to be used to discriminate the groups.
-   target.ts.doubleYlegend = false; // Allows the y-axis legend to be displayed on both sides of the chart.
-   target.ts.showGrid = false; // If active, a reference grid is displayed.
-   target.ts.showBrushTooltip = true; // Allows to display a tooltip on the brushes containing its coordinates.
-   target.ts.autoUpdate = true; // Allows to decide whether changes in brushes are processed while moving, or only at the end of the movement.
-   target.ts.brushGruopSize = 15; //Controls the size of the colored rectangles used to select the different brushGroups.
-   target.ts.stepX = { days: 10 }; // Defines the step used, both in the spinboxes and with the arrows on the X axis. (See https://date-fns.org/v2.16.1/docs/Duration )
-   target.ts.stepY = 1; // // Defines the step used, both in the spinboxes and with the arrows on the Y axis.
-
-
-        </script>
-        <li><strong>Set the data</strong>.
-            <script type="text/plain" class="language-js">
-target.ts.data(myData);
-
-
-            </script>
-            <span>The file containing the reference lines will be a json file with the following definition:</span>
-
-            <script type="text/plain" class="language-js">
-[
+target.ts.xPartitions = 10; // Partitions performed on the X-axis for the collision acceleration algorithm.
+target.ts.yPartitions = 10; // Partitions performed on the Y-axis for the collision acceleration algorithm.
+target.ts.defaultAlpha = 0.8; // Default transparency (when no selection is active) of drawn lines
+target.ts.selectedAlpha = 1; // Transparency of selected lines
+target.ts.noSelectedAlpha = 0.4; // Transparency of unselected lines
+target.ts.backgroundColor = "#ffffff";
+</code></pre>
+        </li>
+        <li>**[Optional] Add the references lines
+            <pre><code class="lang-js">
+target.ts.addReferenceCurves(myReferenceCurves)
+            </code></pre>
+            For the definition of the reference lines, see the <a href="#reference-lines">custom formats</a> section
+        </li>
+    </ol>
+    <h2 id="options">Options</h2>
+    <p>This section will show all possible options grouped by categories.</p>
+    <h3 id="elements">Elements</h3>
+    <ul>
+        <li><strong>target</strong>: pass a html element where you want to render</li>
+        <li><strong>detailsElement</strong>: pass a html element where you want to render the details</li>
+        <li><strong>coordinatesElement</strong>: pass a html element where you want to render the brush coordinates
+            Input.
+        </li>
+        <li><strong>groupsElement</strong>: pass a html element where you want to have the brushes controls.</li>
+        <li><strong>showBrushesControls</strong>:If true, the brush control is displayed in the default location. If
+            false you can still use brushesControlsElement to show the control on a different element on your app
+        </li>
+        <li><strong>showBrushTooltip</strong>: Allows to display a tooltip on the brushes containing its coordinates.
+        </li>
+    </ul>
+    <h3 id="data">Data</h3>
+    <ul>
+        <li><strong>x</strong>: Attribute to show in the X axis (Note that it also supports functions)</li>
+        <li><strong>y</strong>: Attribute to show in the Y axis (Note that it also supports functions)</li>
+        <li><strong>id</strong>: Attribute to group the input data (Note that it also supports functions)</li>
+        <li><strong>color</strong>: Specifies the attribute to be used to discriminate the groups (Note that it also
+            supports functions).
+        </li>
+        <li><strong>xScale</strong>: It allows to pass a scale of d3 with its parameters, except for the domain which is
+            defined by the xDomain parameter.
+        </li>
+        <li><strong>yScale</strong>: It allows to pass a scale of d3 with its parameters, except for the domain which is
+            defined by the yDomain parameter.
+        </li>
+        <li><strong>xDomain</strong>: Defines the domain to be used in the x scale.</li>
+        <li><strong>yDomain</strong>: Defines the domain to be used in the y scale.</li>
+        <li><strong>referenceCurves</strong>: Specifies a Json object with the information of the reference lines.</li>
+        <li><strong>fmtX</strong>: Function, how to format x points in the tooltip. Note that it must conform to the
+            data type provided in X.
+        </li>
+        <li><strong>fmtY</strong>: Function, how to format x points in the tooltip. Note that it must conform to the
+            data type provided in Y.
+        </li>
+        <li><strong>xLabel</strong>: Label to show in the X axis</li>
+        <li><strong>yLabel</strong>: Label to show in the Y axis</li>
+        <li><strong>filters</strong>: Array of predefined TimeGroups and TimeBoxes.
+        </li>
+    </ul>
+    <h3 id="color-configuration">Color Configuration</h3>
+    <ul>
+        <li><strong>defaultAlpha</strong>: Default transparency (when no selection is active) of drawn lines</li>
+        <li><strong>selectedAlpha</strong>: Transparency of selected lines</li>
+        <li><strong>noSelectedAlpha</strong>: Transparency of unselected lines</li>
+        <li><strong>alphaScale</strong>: A scale to adjust the alpha by the number of rendering elements</li>
+        <li><strong>backgroundColor</strong>:</li>
+        <li><strong>defaultColor</strong>: Default color (when no selection is active) of the drawn lines. It only has
+            effect when &quot;color&quot; is not defined.
+        </li>
+        <li><strong>selectedColor</strong>: Color of selected lines. It only has effect when &quot;color&quot; is not
+            defined.
+        </li>
+        <li><strong>noSelectedColor</strong>: Color of unselected lines. It only has effect when &quot;color&quot; is
+            not defined.
+        </li>
+        <li><strong>colorScale</strong>: The color scale to be used to display the different groups defined by the
+            &quot;color&quot; attribute. Typically, a <a href="https://observablehq.com/@d3/color-schemes">categorical
+                scale of D3</a></li>
+        <li><strong>brushesColorScale</strong>: The color scale to be used to display the brushes typically a <a
+                href="https://observablehq.com/@d3/color-schemes">categorical scale of D3</a></li>
+        <li><strong>selectedColorTransform</strong>: Function to be applied to the color of the selected group. It only
+            has effect when &quot;color&quot; is defined.
+        </li>
+    </ul>
+    <h3 id="size-configuration">size Configuration</h3>
+    <ul>
+        <li><strong>width</strong>: Set the desired width of the overview Widget</li>
+        <li><strong>height</strong>: Set the desired height of the overview Widget</li>
+        <li><strong>detailsContainerHeight</strong>: Set the desired height of the details container Widget</li>
+        <li><strong>detailsWidth</strong>: Set the desired width of the individual details visualization</li>
+        <li><strong>detailsHeight</strong>: Set the desired height of the individual details visualization</li>
+        <li><strong>margin</strong>: Set the desired margin for overview Widget, d3 common format ( <code>{ left: 50,
+            top: 30, bottom: 50, right: 20 }</code>)
+        </li>
+        <li><strong>detailsMargin</strong>: Margin options for details view, d3 common format, leave null for using the
+            overview margin</li>
+    </ul>
+    <h3 id="callbacks">CallBacks</h3>
+    <ul>
+        <li><strong>updateCallback</strong>: (data) => doSomethingWithData</li>
+        <li><strong>statusCallback</strong>: (status) => doSomethingWithStatus</li>
+    </ul>
+    <h3 id="rendering">Rendering</h3>
+    <ul>
+        <li><strong>brushShadow</strong>: Determines how the shadow will be applied to the TimeBoxes belonging to the
+            active TimeGroup.
+        </li>
+        <li><strong>showGroupMedian</strong>: If active show a line with the median of the enabled groups.</li>
+        <li><strong>hasDetails</strong>: Determines whether detail data will be displayed or not. Disabling it saves
+            preprocessing time if detail data is not to be displayed.
+        </li>
+        <li><strong>doubleYlegend</strong>: Allows the y-axis legend to be displayed on both sides of the chart.</li>
+        <li><strong>showGrid</strong>: If active, a reference grid is displayed.</li>
+        <li><strong>brushGroupSize</strong>: Controls the size of the colored rectangles used to select the different
+            brushGroups.</li>
+    </ul>
+    <h3 id="performance">Performance</h3>
+    <ul>
+        <li><strong>maxDetailsRecords</strong>: How many results to show in the detail view</li>
+        <li><strong>maxTimelines</strong>: Set to a value to limit the number of distinct timelines to show</li>
+        <li><strong>xPartitions</strong>: Partitions performed on the X-axis for the collision acceleration algorithm.
+        </li>
+        <li><strong>yPartitions</strong>: Partitions performed on the Y-axis for the collision acceleration algorithm.</li>
+    </ul>
+    <h3>Options</h3>
+    <ul>
+        <li><strong>medianNumBins</strong>: Number of bins used to compute the group median.</li>
+        <li><strong>medianLineDash</strong>: Selected group median line dash pattern canvas style</li>
+        <li><strong>medianLineAlpha</strong>: Selected group median line opacity</li>
+        <li><strong>medianLineWidth</strong>: Selected group median line width</li>
+        <li><strong>medianFn</strong>: Function to use when showing the median</li>
+        <li><strong>medianMinRecordsPerBin</strong>: Min number of records each bin must have to be considered</li>
+        <li><strong>autoUpdate</strong>: Allows to decide whether changes in brushes are processed while moving, or only
+            at the end of the movement.
+        </li>
+        <li><strong>_this</strong>: pass the object this in order to be able to maintain the state in case of changes in
+            the input
+        </li>
+        <li><strong>fixAxis</strong>: When active, the axes will not change when modifying the data.</li>
+    </ul>
+    <h2 id="custom-formats">Custom Formats</h2>
+    <p>This section details the different formats used by the application for some parameters. Note that the fields
+        marked as optional are not mandatory and if not provided a default value will be used.</p>
+    <h3 id="reference-lines">Reference lines</h3>
+    <pre><code class="lang-js">[
   {
     "name": "Line1",
     "color": "yellow", // Color in css format
@@ -200,33 +320,51 @@ target.ts.data(myData);
     "data": [[p1x,p1y],[p2x,p2y],...]
   }
 ]
-
-
-            </script>
-    </ol>
-
+</code></pre>
+    <h3 id="filters">Filters</h3>
+    <pre><code class="lang-js">
+ filters: [
+    {
+        name: "Group 1",
+        IsEnable: true, /*Optional*/
+        isActive: false, /*Optional*/
+        brushes: [
+            {
+                selectionDomain: [
+                  [1.5,-7], /*[x0,y0]*/
+                  [2.5, -17] /*[x1,y1]*/
+                ],
+                mode: "intersect", /* or "contains". Optional*/
+                aggregation: "and", /* or "or". Optional */
+            }
+        ]
+    },
+    {
+        Another BrushGroup
+    }
+]
+</code></pre>
     <h2>Source Code</h2>
-    <p>The widget code is available <a href="code/timesearcherplus.zip">here</a></p>
+    <p>The widget code is available <a href="code/timewidget.zip">here</a></p>
     <p>To compile the code you should follow the instructions:</p>
     <p>Go to the package download location</p>
-    <script type="text/plain" class="language-sh">
-cd /{{Route]]/timesearcherplus
-
-    </script>
+    <code class="language-sh">
+        cd /{{Route]]/timewidget
+    </code>
     <p>Install the project</p>
-    <script type="text/plain" class="language-sh">
-npm install
-    </script>
+    <code type="text/plain" class="language-sh">
+        npm install
+    </code>
     <p>At this point you should have the project compiled in the folder dist, with the files</p>
     <ul>
-        <li>timeSearcher.esm.js</li>
-        <li>TimeSearcher.js</li>
-        <li>TimeSearcher.min.js</li>
+        <li>TimeWidget.esm.js</li>
+        <li>TimeWidget.js</li>
+        <li>TimeWidget.min.js</li>
     </ul>
 
 
     <h2 id="license">License</h2>
-    <p>TimeSearcher+.js is licensed under the MIT license. (<a href="http://opensource.org/licenses/MIT)e">http://opensource.org/licenses/MIT)e</a>
+    <p>TimeWidget.js is licensed under the MIT license. (<a href="http://opensource.org/licenses/MIT)e">http://opensource.org/licenses/MIT)e</a>
     </p>
 
     <h2>Why this page?</h2>

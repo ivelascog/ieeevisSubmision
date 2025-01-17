@@ -1,95 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>TimeSearcher+</title>
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>TimeWidget</title>
 
-    <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
-            rel="stylesheet"
-            integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
-            crossorigin="anonymous"
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com"/>
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-    <link
-            href="https://fonts.googleapis.com/css2?family=Oswald:wght@600&family=Roboto:wght@300&display=swap"
-            rel="stylesheet"
-    />
+        <link
+                href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
+                rel="stylesheet"
+                integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
+                crossorigin="anonymous"
+        />
+        <link rel="preconnect" href="https://fonts.googleapis.com"/>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+        <link
+                href="https://fonts.googleapis.com/css2?family=Oswald:wght@600&family=Roboto:wght@300&display=swap"
+                rel="stylesheet"
+        />
 
-    <style>
-        h1,
-        h2,
-        h3,
-        h4 {
-            font-family: "Oswald", sans-serif;
-            font-weight: bolder;
-        }
+        <style>
+            h1,
+            h2,
+            h3,
+            h4 {
+                font-family: "Oswald", sans-serif;
+                font-weight: bolder;
+            }
 
-        div {
-            font-family: "Roboto", sans-serif;
-        }
-    </style>
+            div {
+                font-family: "Roboto", sans-serif;
+            }
+        </style>
+    </head>
 </head>
 <body>
 <div class="container">
+    <h1>TimeWidget <br/><small>KMC Weights</small></h1>
+    <p>To clear a selection rectangle press the "R" or "Backspace" key. Use the arrow keys to move the selection boxes.
+        Press shift click to select several Time-boxes at the same time.</p>
+    <h2>Controls:</h2>
     <div class="row">
-        <h1>TimeSearcher+ <br/><small>KMC Weights</small></h1>
-        <div class="col-8">
-            <div id="observablehq-intro-347bccdd"></div>
-            <div id="observablehq-viewof-maxTimelines-347bccdd"></div>
+        <div class="col-4">
+            <div id="maxTimelines"></div>
         </div>
         <div class="col-4">
-            <div id="observablehq-viewof-hasDetailed-347bccdd"></div>
-            <div id="observablehq-viewof-showGrid-347bccdd"></div>
-            <div id="observablehq-viewof-doubleYlegend-347bccdd"></div>
+            <div id="hasDetail"></div>
         </div>
-        <!-- /.col-4 -->
+        <div class="col-4">
+            <div id="showGrid"></div>
+        </div>
+        <div class="col-4">
+            <div id="doubleYlegend"></div>
+        </div>
+    </div>
 
-        <!-- /.col-8 -->
-    </div>
-    <!-- /.row -->
-    <hr>
-    <div class="row">
-        <div class="col-8" id="divChart">
-            <div id="observablehq-viewof-selected-347bccdd"></div>
+
+    <div id="observablehq-controls-e6c4fa9a"></div>
+    <div style="display:flex" id="chart-container">
+        <div flex=3 id="divChart"></div>
+        <div flex=1>
+            <h4>Groups: </h4>
+            <div id="groups"></div>
+            </br>
+            <h4>Coordinates: </h4>
+            <div id="brushesCoordinates"></div>
         </div>
-        <div class="col-4">
-            <div id="observablehq-brushCoordinatesElement-347bccdd"></div>
-            <div id="observablehq-divDetails-347bccdd"></div>
-        </div>
     </div>
+
+    <div id="details"></div>
 </div>
 
-<link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/@observablehq/inspector@5/dist/inspector.css"
-/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@observablehq/inspector@5/dist/inspector.css">
 <script type="module">
     import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@5/dist/runtime.js";
-    import define from "https://api.observablehq.com/d/b8b51fe1db7d3769.js?v=3";
+    import define
+        from "https://api.observablehq.com/d/1dd6889c8f2ddb16.js?v=4&api_key=dbab33624d8a8c9ea06bd755922923a78fcb0501";
 
-    const notebook = new Runtime().module(define, name => {
-        if (name === "intro") return new Inspector(document.querySelector("#observablehq-intro-347bccdd"));
-        if (name === "viewof selected") return new Inspector(document.querySelector("#observablehq-viewof-selected-347bccdd"));
-        if (name === "viewof hasDetailed") return new Inspector(document.querySelector("#observablehq-viewof-hasDetailed-347bccdd"));
-        if (name === "viewof showGrid") return new Inspector(document.querySelector("#observablehq-viewof-showGrid-347bccdd"));
-        if (name === "viewof doubleYlegend") return new Inspector(document.querySelector("#observablehq-viewof-doubleYlegend-347bccdd"));
-        if (name === "viewof maxTimelines") return new Inspector(document.querySelector("#observablehq-viewof-maxTimelines-347bccdd"));
-        if (name === "brushCoordinatesElement") return new Inspector(document.querySelector("#observablehq-brushCoordinatesElement-347bccdd"));
-        if (name === "divDetails") return new Inspector(document.querySelector("#observablehq-divDetails-347bccdd"));
-        return ["update", "brushDetails", "divTimeSearcher", "brushesControlsElement", "dataF"].includes(name);
+    new Runtime().module(define, name => {
+        if (name === "mainView") return new Inspector(document.querySelector("#divChart"));
+        if (name === "groups") return new Inspector(document.querySelector("#groups"));
+        if (name === "brushesCoordinates") return new Inspector(document.querySelector("#brushesCoordinates"));
+        if (name === "details") return new Inspector(document.querySelector("#details"));
+        if (name === "viewof hasDetails") return new Inspector(document.querySelector("#hasDetail"));
+        if (name === "viewof maxTimelines") return new Inspector(document.querySelector("#maxTimelines"));
+        if (name === "viewof showGrid") return new Inspector(document.querySelector("#showGrid"));
+        if (name === "viewof doubleYlegend") return new Inspector(document.querySelector("#doubleYlegend"));
     });
-
-    console.log("Changing width to", document.querySelector("#divChart").offsetWidth);
-    notebook.redefine("width", document.querySelector("#divChart").offsetWidth)
 </script>
-
-<script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
-        crossorigin="anonymous"
-></script>
-</body>
-</html>

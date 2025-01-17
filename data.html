@@ -1,80 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>TimeSearcher+</title>
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>TimeWidget</title>
 
-    <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
-            rel="stylesheet"
-            integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
-            crossorigin="anonymous"
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com"/>
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-    <link
-            href="https://fonts.googleapis.com/css2?family=Oswald:wght@600&family=Roboto:wght@300&display=swap"
-            rel="stylesheet"
-    />
+        <link
+                href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
+                rel="stylesheet"
+                integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
+                crossorigin="anonymous"
+        />
+        <link rel="preconnect" href="https://fonts.googleapis.com"/>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+        <link
+                href="https://fonts.googleapis.com/css2?family=Oswald:wght@600&family=Roboto:wght@300&display=swap"
+                rel="stylesheet"
+        />
 
-    <style>
-      h1,
-      h2,
-      h3,
-      h4 {
-        font-family: "Oswald", sans-serif;
-        font-weight: bolder;
-      }
+        <style>
+            h1,
+            h2,
+            h3,
+            h4 {
+                font-family: "Oswald", sans-serif;
+                font-weight: bolder;
+            }
 
-      div {
-        font-family: "Roboto", sans-serif;
-      }
-    </style>
-  </head>
+            div {
+                font-family: "Roboto", sans-serif;
+            }
+        </style>
+    </head>
 </head>
 <body>
+
 <div class="container">
-  <h1>TimeSearcher+ <br/><small>Test your own data (CSV Format)</small></h1>
+    <h1>TimeWidget <br/><small>Test your own data (CSV Format)</small></h1>
 
+    <div id="observablehq-controls-e6c4fa9a"></div>
+    <div style="display:flex" id="chart-container">
+        <div flex=3 id="divChart"></div>
+        <div flex=1>
+            <h4>Groups: </h4>
+            <div id="groups"></div>
+            </br>
+            <h4>Coordinates: </h4>
+            <div id="brushesCoordinates"></div>
+        </div>
+    </div>
 
-  <div id="observablehq-controls-e6c4fa9a"></div>
-  <div class="row">
-    <div class="col-8" id="divChart">
-      <div id="observablehq-viewof-selected"></div>
-      <div id="observablehq-brushesControlsElement"></div>
-      <div id="observablehq-divDetails"></div>
-    </div>
-    <div class="col-4">
-      <div id="observablehq-brushCoordinatesElement"></div>
-    </div>
-  </div>
+    <div id="details"></div>
 </div>
+
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@observablehq/inspector@5/dist/inspector.css">
 <script type="module">
-  import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@5/dist/runtime.js";
-  import define from "https://api.observablehq.com/d/c288625e9c64d957.js?v=3";
+    import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@5/dist/runtime.js";
+    import define
+        from "https://api.observablehq.com/d/37b572175ef5af3a.js?v=4&api_key=2ee8ea135403e64803b5c59ade71131e75d26e0e";
 
-  const notebook = new Runtime().module(define, name => {
-    if (name === "controls") return new Inspector(document.querySelector("#observablehq-controls-e6c4fa9a"));
-    if (name === "brushCoordinatesElement") return new Inspector(document.querySelector("#observablehq-brushCoordinatesElement"));
-    if (name === "brushesControlsElement") return new Inspector(document.querySelector("#observablehq-brushesControlsElement"));
-    if (name === "divDetails") return new Inspector(document.querySelector("#observablehq-divDetails"));
-    if (name === "viewof selected") return new Inspector(document.querySelector("#observablehq-viewof-selected"));
+    const notebook = new Runtime().module(define, name => {
+        if (name === "controls") return new Inspector(document.querySelector("#observablehq-controls-e6c4fa9a"));
+        if (name === "mainView") return new Inspector(document.querySelector("#divChart"));
+        if (name === "groups") return new Inspector(document.querySelector("#groups"));
+        if (name === "brushesCoordinates") return new Inspector(document.querySelector("#brushesCoordinates"));
+        if (name === "details") return new Inspector(document.querySelector("#details"));
+        return ["usedData"].includes(name)
+    });
 
-
-    return ["update", "divTimeSearcher", "brushCoordinatesElement", "brushesControlsElement", "divDetails"].includes(name);
-  });
-
-  console.log("Changing width to", document.querySelector("#divChart").offsetWidth);
-  notebook.redefine("width", document.querySelector("#divChart").offsetWidth)
+    console.log("Changing width to", document.querySelector("#chart-container").offsetWidth * 0.7);
+    notebook.redefine("width", document.querySelector("#chart-container").offsetWidth * 0.7)
 </script>
+
 <script>
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
-        crossorigin="anonymous"
+    src = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+    integrity = "sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+    crossorigin = "anonymous"
 </script>
 </body>
 </html>
